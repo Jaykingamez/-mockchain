@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<%@include file="/html/navbar.html"%>
+	<%@include file="/jsp/alert.jsp"%>
 </body>
 </html>
