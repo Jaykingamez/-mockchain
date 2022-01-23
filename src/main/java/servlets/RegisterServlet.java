@@ -35,19 +35,27 @@ public class RegisterServlet extends HttpServlet {
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
 		int rows = dao.registerUser(user, connection);
-		
+		int accountId = dao.validateUser(user, connection);
+		double amount = dao.createWallet(accountId, connection);
 
 		// prepare an information message for user about the success or failure of the operation
 		String infoMessage = null;
 		if(rows==-1){
-			infoMessage="Sorry, an error occurred!";
+			infoMessage="Sorry, we failed to register that account!";
+			request.setAttribute("infoMessage", infoMessage);
+			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
+		} else if(amount == -1) {
+			infoMessage="Sorry, we failed to register that wallet!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
 		}
 		else{
 			infoMessage = "User registered successfully!";
 			request.setAttribute("infoMessage", infoMessage);
-			response.sendRedirect("transaction");
+			request.getSession().setAttribute("username", username);
+			request.getSession().setAttribute("accountId", accountId);
+			request.getSession().setAttribute("amount", amount);
+			response.sendRedirect("wallet");
 		}
 	}
 

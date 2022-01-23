@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import beans.User;
 import dao.ApplicationDao;
@@ -37,18 +38,27 @@ public class LoginServlet extends HttpServlet {
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
 		int accountId = dao.validateUser(user, connection);
+		double amount = dao.getWalletAmount(accountId, connection);
 
 		// prepare an information message for user about the success or failure of the
 		// operation
 		String infoMessage = null;
 		if (accountId == -1) {
-			infoMessage = "Sorry, an error occurred!";
+			infoMessage = "Sorry, that account does not exist!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
-		} else {
+		} else if (amount == -1){
+			infoMessage = "Sorry, that wallet does not exist!";
+			request.setAttribute("infoMessage", infoMessage);
+			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
+		}
+		 else {
 			infoMessage = "User login successfully!";
 			request.setAttribute("infoMessage", infoMessage);
-			response.sendRedirect("transaction");
+			request.getSession().setAttribute("username", username);
+			request.getSession().setAttribute("accountId", accountId);
+			request.getSession().setAttribute("amount", amount);
+			response.sendRedirect("wallet");
 		}
 	}
 
