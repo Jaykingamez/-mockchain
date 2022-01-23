@@ -3,6 +3,11 @@ package beans;
 public class User {
 	private String password;
 	private String username;
+	
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	/**
 	 * @return the password
@@ -29,12 +34,6 @@ public class User {
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public User(String password, String username) {
-		super();
-		this.password = password;
 		this.username = username;
 	}
 }

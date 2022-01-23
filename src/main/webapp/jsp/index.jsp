@@ -12,6 +12,7 @@
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 </head>
+<jsp:include page="alert.jsp" />
 <body>
 	<header class="text-center">
 		<h1>Welcome to Mockchain</h1>
