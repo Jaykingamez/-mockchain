@@ -27,43 +27,45 @@ public class RegisterServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		
+
 		User user = new User(username, password);
-		
+
 		ApplicationDao dao = new ApplicationDao();
-		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
+		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
 		int rows = dao.registerUser(user, connection);
 		int userId = dao.validateUser(user, connection);
-		
+
+		String infoMessage = null;
+		if (rows == -1) {
+			infoMessage = "Sorry, we failed to register that account!";
+			request.setAttribute("infoMessage", infoMessage);
+			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
+		}
+
 		int walletResult = dao.createWallet(userId, connection);
-		
+
+		if (walletResult == -1) {
+			infoMessage = "Sorry, we failed to register that wallet!";
+			request.setAttribute("infoMessage", infoMessage);
+			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
+		}
+
 		Wallet wallet = dao.getWallet(userId, connection);
 		int walletId = wallet.getWalletId();
 		double amount = wallet.getAmount();
-		
 
-		// prepare an information message for user about the success or failure of the operation
-		String infoMessage = null;
-		if(rows==-1){
-			infoMessage="Sorry, we failed to register that account!";
-			request.setAttribute("infoMessage", infoMessage);
-			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
-		} else if(walletResult == -1) {
-			infoMessage="Sorry, we failed to register that wallet!";
-			request.setAttribute("infoMessage", infoMessage);
-			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
-		}
-		else{
-			infoMessage = "User registered successfully!";
-			request.setAttribute("infoMessage", infoMessage);
-			request.getSession().setAttribute("username", username);
-			request.getSession().setAttribute("userId", userId);
-			request.getSession().setAttribute("amount", amount);
-			response.sendRedirect("wallet");
-		}
+		//success
+		infoMessage = "User registered successfully!";
+		request.setAttribute("infoMessage", infoMessage);
+		request.getSession().setAttribute("username", username);
+		request.getSession().setAttribute("userId", userId);
+		request.getSession().setAttribute("amount", amount);
+		response.sendRedirect("wallet");
+
 	}
 
 }
