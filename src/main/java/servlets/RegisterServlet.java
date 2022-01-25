@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import beans.User;
+import beans.Wallet;
 import dao.ApplicationDao;
 
 /**
@@ -35,8 +36,14 @@ public class RegisterServlet extends HttpServlet {
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
 		int rows = dao.registerUser(user, connection);
-		int accountId = dao.validateUser(user, connection);
-		double amount = dao.createWallet(accountId, connection);
+		int userId = dao.validateUser(user, connection);
+		
+		int walletResult = dao.createWallet(userId, connection);
+		
+		Wallet wallet = dao.getWallet(userId, connection);
+		int walletId = wallet.getWalletId();
+		double amount = wallet.getAmount();
+		
 
 		// prepare an information message for user about the success or failure of the operation
 		String infoMessage = null;
@@ -44,7 +51,7 @@ public class RegisterServlet extends HttpServlet {
 			infoMessage="Sorry, we failed to register that account!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
-		} else if(amount == -1) {
+		} else if(walletResult == -1) {
 			infoMessage="Sorry, we failed to register that wallet!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
@@ -53,7 +60,7 @@ public class RegisterServlet extends HttpServlet {
 			infoMessage = "User registered successfully!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getSession().setAttribute("username", username);
-			request.getSession().setAttribute("accountId", accountId);
+			request.getSession().setAttribute("userId", userId);
 			request.getSession().setAttribute("amount", amount);
 			response.sendRedirect("wallet");
 		}
