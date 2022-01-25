@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Transaction {
 	private int transactionId = 0;
-	private Integer previoustransactionId;
+	private Integer previousTransactionId;
 	private Timestamp timestamp;
 	private int walletId;
 	private Integer receiverId;
@@ -20,7 +20,7 @@ public class Transaction {
 	public Transaction(int transactionId, Integer previoustransactionId, Timestamp timestamp,
 			int walletId, Integer receiverId, double amount, String type, Boolean approve) {
 		this.transactionId = transactionId;
-		this.previoustransactionId = previoustransactionId;
+		this.previousTransactionId = previoustransactionId;
 		this.timestamp = timestamp;
 		this.walletId = walletId;
 		this.receiverId = receiverId;
@@ -46,15 +46,15 @@ public class Transaction {
 	/**
 	 * @return the previoustransactionId
 	 */
-	public Integer getPrevioustransactionId() {
-		return previoustransactionId;
+	public Integer getPreviousTransactionId() {
+		return previousTransactionId;
 	}
 
 	/**
 	 * @param previoustransactionId the previoustransactionId to set
 	 */
-	public void setPrevioustransactionId(int previoustransactionId) {
-		this.previoustransactionId = previoustransactionId;
+	public void setPrevioustransactionId(int previousTransactionId) {
+		this.previousTransactionId = previousTransactionId;
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class Transaction {
 	/**
 	 * @return the approve
 	 */
-	public Boolean isApprove() {
+	public Boolean getApprove() {
 		return approve;
 	}
 

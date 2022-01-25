@@ -13,6 +13,45 @@
 </head>
 <jsp:include page="alert.jsp" />
 <body>
-	<%@include file="/html/navbar.html" %>
+	<%@include file="/html/navbar.html"%>
+	<div class="row">
+		<div class="container">
+			<h3 class="text-center">List of Transactions</h3>
+			<hr>
+			<br>
+			<!-- Create a table to list out all current users information -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>TransactionId</th>
+						<th>PreviousTransactionId</th>
+						<th>Timestamp</th>
+						<th>WalletId</th>
+						<th>ReceiverId</th>
+						<th>Amount</th>
+						<th>Type</th>
+						<th>Approve</th>
+					</tr>
+				</thead>
+				<!-- Pass in the list of users receive via the Servlet’s response to a loop-->
+
+				<tbody>
+					<c:forEach var="transaction" items="${transactions}">
+						<!-- For each user in the database, display their information accordingly -->
+						<tr>
+							<td><c:out value="${transaction.transactionId}" /></td>
+							<td><c:out value="${transaction.previousTransactionId}" /></td>
+							<td><c:out value="${transaction.timestamp}" /></td>
+							<td><c:out value="${transaction.walletId}" /></td>
+							<td><c:out value="${transaction.receiverId}" /></td>
+							<td><c:out value="${transaction.amount}" /></td>
+							<td><c:out value="${transaction.type}" /></td>
+							<td><c:out value="${transaction.approve}" /></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </body>
 </html>
