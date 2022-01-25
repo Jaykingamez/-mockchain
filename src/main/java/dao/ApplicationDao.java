@@ -72,6 +72,23 @@ public class ApplicationDao {
 		return userId;
 	}
 
+	public int getTotalNumberOfUsers(Connection connection) {
+		int number = -1;
+		try {
+			// write the select query
+			String sql = "select count(*) from user";
+			PreparedStatement statement = connection.prepareStatement(sql);
+			
+			ResultSet set = statement.executeQuery();
+			while(set.next()) {
+				number = set.getInt("count(*)");
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return number;
+	}
+
 	/**
 	 * Create new user's wallet
 	 */
@@ -172,17 +189,24 @@ public class ApplicationDao {
 		return lastTransactionId;
 	}
 
-	public List<Transaction> getAllTransactions(Connection connection) {
+	public List<Transaction> getAllTransactions(String approveString , Connection connection) {
 		List<Transaction> transactions = new ArrayList<>();
 
 		try {
-			String getQuery = "select * from transaction";
+			String getQuery = "";
+			if (approveString == "approve") {
+				getQuery = "select * from transaction where approve=1";
+			} else {
+				getQuery = "select * from transaction where approve is null";
+			}
+			
 			PreparedStatement preparedStatement = connection.prepareStatement(getQuery);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
+
 			while (resultSet.next()) {
 				int transactionId = resultSet.getInt("transactionId");
-				// it might be null due to the first block in the chain having nowhere to point back to
+				// it might be null due to the first block in the chain having nowhere to point
+				// back to
 				Integer previousTransactionId = resultSet.getObject("previousTransactionId", Integer.class);
 				Timestamp timestamp = resultSet.getTimestamp("timestamp");
 				int walletId = resultSet.getInt("walletId");
@@ -191,17 +215,18 @@ public class ApplicationDao {
 				double amount = resultSet.getDouble("amount");
 				String type = resultSet.getString("type");
 				Boolean approve = resultSet.getObject("approve", Boolean.class);
-				
-				Transaction transaction = new Transaction(transactionId, previousTransactionId, timestamp,
-						walletId, receiverId, amount, type, approve);
+
+				Transaction transaction = new Transaction(transactionId, previousTransactionId, timestamp, walletId,
+						receiverId, amount, type, approve);
 				transactions.add(transaction);
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 		return transactions;
-		
+
 	}
+	
 
 	/**
 	 * Get transaction based on walletId
