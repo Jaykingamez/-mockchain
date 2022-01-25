@@ -1,0 +1,39 @@
+CREATE SCHEMA `mockchain` ;
+
+CREATE TABLE `mockchain`.`user` (
+  `userId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
+
+CREATE TABLE `mockchain`.`wallet` (
+  `walletId` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT UNSIGNED NOT NULL,
+  `amount` DECIMAL(65,2) NOT NULL,
+  UNIQUE INDEX `userId_UNIQUE` (`userId` ASC) VISIBLE,
+  PRIMARY KEY (`walletId`),
+  UNIQUE INDEX `walletId_UNIQUE` (`walletId` ASC) VISIBLE);
+
+
+CREATE TABLE `mockchain`.`transaction` (
+  `transactionId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `previousTransactionId` INT NULL,
+  `timestamp` TIMESTAMP NOT NULL,
+  `walletId` INT UNSIGNED NOT NULL,
+  `receiverId` INT UNSIGNED NULL,
+  `amount` DECIMAL(65,2) NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `approve` TINYINT NULL,
+  PRIMARY KEY (`transactionId`),
+  UNIQUE INDEX `transactionId_UNIQUE` (`transactionId` ASC) VISIBLE,
+  UNIQUE INDEX `previousTransactionId_UNIQUE` (`previousTransactionId` ASC) VISIBLE);
+
+
+CREATE TABLE `mockchain`.`approve` (
+  `approveId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `transactionId` INT UNSIGNED NOT NULL,
+  `userId` INT UNSIGNED NOT NULL,
+  `approve` TINYINT(1) NULL,
+  PRIMARY KEY (`approveId`),
+  UNIQUE INDEX `approveId_UNIQUE` (`approveId` ASC) VISIBLE);
