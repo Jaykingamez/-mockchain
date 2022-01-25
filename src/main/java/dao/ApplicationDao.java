@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.CannotProceedException;
 
@@ -170,6 +172,37 @@ public class ApplicationDao {
 		return lastTransactionId;
 	}
 
+	public List<Transaction> getAllTransactions(Connection connection) {
+		List<Transaction> transactions = new ArrayList<>();
+
+		try {
+			String getQuery = "select * from transaction";
+			PreparedStatement preparedStatement = connection.prepareStatement(getQuery);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while (resultSet.next()) {
+				int transactionId = resultSet.getInt("transactionId");
+				// it might be null due to the first block in the chain having nowhere to point back to
+				Integer previousTransactionId = resultSet.getObject("previousTransactionId", Integer.class);
+				Timestamp timestamp = resultSet.getTimestamp("timestamp");
+				int walletId = resultSet.getInt("walletId");
+				// it might be null due to some transactions involving giving oneself money
+				Integer receiverId = resultSet.getObject("receiverId", Integer.class);
+				double amount = resultSet.getDouble("amount");
+				String type = resultSet.getString("type");
+				Boolean approve = resultSet.getObject("approve", Boolean.class);
+				
+				Transaction transaction = new Transaction(transactionId, previousTransactionId, timestamp,
+						walletId, receiverId, amount, type, approve);
+				transactions.add(transaction);
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return transactions;
+		
+	}
+
 	/**
 	 * Get transaction based on walletId
 	 */
@@ -215,13 +248,13 @@ public class ApplicationDao {
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
 			statement.setInt(1, transaction.getTransactionId());
-			statement.setObject(2, transaction.getPrevioustransactionId(), Types.INTEGER);
+			statement.setObject(2, transaction.getPreviousTransactionId(), Types.INTEGER);
 			statement.setTimestamp(3, transaction.getTimestamp());
 			statement.setInt(4, transaction.getWalletId());
 			statement.setObject(5, transaction.getReceiverId(), Types.INTEGER);
 			statement.setDouble(6, transaction.getAmount());
 			statement.setString(7, transaction.getType());
-			
+
 			// execute the statement
 			rowsAffected = statement.executeUpdate();
 
