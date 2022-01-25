@@ -39,31 +39,33 @@ public class LoginServlet extends HttpServlet {
 		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
 		int userId = dao.validateUser(user, connection);
 		
-		Wallet wallet = dao.getWallet(userId, connection);
-		int walletId = wallet.getWalletId(); 
-		Double amount = wallet.getAmount();
-
-		// prepare an information message for user about the success or failure of the
-		// operation
 		String infoMessage = null;
+		
 		if (userId == -1) {
 			infoMessage = "Sorry, that account does not exist!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
-		} else if (amount == -1){
+		}
+
+		Wallet wallet = dao.getWallet(userId, connection);
+		int walletId = wallet.getWalletId();
+		Double amount = wallet.getAmount();
+		
+		if (amount == -1) {
 			infoMessage = "Sorry, that wallet does not exist!";
 			request.setAttribute("infoMessage", infoMessage);
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
 		}
-		 else {
-			infoMessage = "User login successfully!";
-			request.setAttribute("infoMessage", infoMessage);
-			request.getSession().setAttribute("username", username);
-			request.getSession().setAttribute("userId", userId);
-			request.getSession().setAttribute("walletId", walletId);
-			request.getSession().setAttribute("amount", amount);
-			response.sendRedirect("wallet");
-		}
+
+		//success
+		infoMessage = "User login successfully!";
+		request.setAttribute("infoMessage", infoMessage);
+		request.getSession().setAttribute("username", username);
+		request.getSession().setAttribute("userId", userId);
+		request.getSession().setAttribute("walletId", walletId);
+		request.getSession().setAttribute("amount", amount);
+		response.sendRedirect("wallet");
+
 	}
 
 }
