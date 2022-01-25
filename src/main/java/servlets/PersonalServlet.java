@@ -56,7 +56,7 @@ public class PersonalServlet extends HttpServlet {
 			Integer lastTransactionId = dao.getLastTransactionId(walletId, connection);
 			
 			int transactionId = lastTransactionId + 1;
-			if (lastTransactionId != -1) {
+			if (lastTransactionId == -1) {
 				lastTransactionId = null;
 			} 
 			
@@ -65,23 +65,16 @@ public class PersonalServlet extends HttpServlet {
 			int transactionAffected = dao.addTransaction(transaction, connection);
 
 			transaction = dao.getTransaction(walletId, connection);
-			transactionId = transaction.getTransactionId();
-			int approveAffected = dao.addApprove(transactionId, connection);
 
 			String infoMessage = null;
-			if (transactionAffected == -1) {
+			if (transactionAffected == -1 || transaction == null) {
 				infoMessage = "Sorry, we failed to perform that transaction!";
 				request.setAttribute("infoMessage", infoMessage);
-				request.getRequestDispatcher("/jsp/wallet.jsp").forward(request, response);
-			} else if (approveAffected == -1) {
-				infoMessage = "Sorry, we failed to add the transaction for approval!";
-				request.setAttribute("infoMessage", infoMessage);
-				request.getRequestDispatcher("/jsp/wallet.jsp").forward(request, response);
-			}
+			} 
 		} catch (NumberFormatException exception) {
 			exception.printStackTrace();
 		}
-
+		response.sendRedirect("wallet");
 	}
 
 }
