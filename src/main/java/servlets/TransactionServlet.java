@@ -25,7 +25,7 @@ public class TransactionServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
-		request.setAttribute("transactions", dao.getAllTransactions(connection));
+		request.setAttribute("transactions", dao.getAllTransactions("approve", connection));
 		request.getRequestDispatcher("/jsp/transaction.jsp").forward(request, response);
 	}
 
