@@ -114,9 +114,9 @@ public class ApplicationDao {
 	}
 
 	/**
-	 * Get the amount in a user's wallet
+	 * Get user's wallet using userId
 	 */
-	public Wallet getWallet(int userId, Connection connection) {
+	public Wallet getWalletUserId(int userId, Connection connection) {
 		Wallet wallet = null;
 		try {
 			// write the select query
@@ -131,6 +131,35 @@ public class ApplicationDao {
 
 			while (set.next()) {
 				int walletId = set.getInt("walletId");
+				double amount = set.getDouble("amount");
+				wallet = new Wallet(walletId, userId, amount);
+			}
+
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+
+		return wallet;
+	}
+	
+	/**
+	 * Get the user's wallet using walletId
+	 */
+	public Wallet getWalletWalletId(int walletId, Connection connection) {
+		Wallet wallet = null;
+		try {
+			// write the select query
+			String sql = "select * from wallet where walletId=?";
+
+			// set parameters with PreparedStatement
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setInt(1, walletId);
+
+			// execute the statement and check whether user exists
+			ResultSet set = statement.executeQuery();
+
+			while (set.next()) {
+				int userId = set.getInt("userId");
 				double amount = set.getDouble("amount");
 				wallet = new Wallet(walletId, userId, amount);
 			}
