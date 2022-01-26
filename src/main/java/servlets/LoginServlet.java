@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
 			request.getRequestDispatcher("/jsp/index.jsp").forward(request, response);
 		}
 
-		Wallet wallet = dao.getWallet(userId, connection);
+		Wallet wallet = dao.getWalletUserId(userId, connection);
 		int walletId = wallet.getWalletId();
 		Double amount = wallet.getAmount();
 		
