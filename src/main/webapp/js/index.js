@@ -10,9 +10,7 @@ $(document).ready(function() {
 		$.post($form.attr("action"), $form.serialize(), function(response) {
 			// receive the json
 			$.each(response, function(key, value) {
-				$("#" + key).val(value);
-				console.log('my key' + key);
-				console.log('my value' + value);
+				$("#" + key).html(value);
 			});
 		});
 		return false;
