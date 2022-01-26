@@ -12,7 +12,8 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<%@include file="/html/navbar.html"%>
+	<%@include file="/html/navbar.html"%>\
+	<%@include file="/jsp/approveModal.jsp"%>
 	<div class="row">
 		<div class="container">
 			<h3 class="text-center">List of Transactions needing approval</h3>
@@ -45,7 +46,18 @@
 							<td><c:out value="${transaction.receiverId}" /></td>
 							<td><c:out value="${transaction.amount}" /></td>
 							<td><c:out value="${transaction.type}" /></td>
-							<td><c:out value="${transaction.approve}" /></td>
+							<td><form action="approveModal" method="post">
+									<input type="hidden" type="number" name="walletId"
+										value=<c:out value="${transaction.walletId}" />>
+									<input type="hidden" type="number" step="0.01" name="amount"
+										value=<c:out value="${transaction.amount}" />>
+									<input type="hidden" type="number" name="receiverId"
+										value=<c:out value="${transaction.receiverId}" />>
+									<input type="hidden" type="text" name="type"
+										value=<c:out value="${transaction.type}" />>
+									<button type="submit" class="btn btn-success"
+										data-toggle="modal" data-target="#approveModal">Approve</button>
+								</form></td>
 						</tr>
 					</c:forEach>
 				</tbody>
