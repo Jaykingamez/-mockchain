@@ -18,11 +18,15 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-sm">
-							<div class="card">
+							<div class="card text-center">
 								<div class="card-body">
-									<h5 id="walletId" class="card-title">${requestScope.walletId}</h5>
+									<h5>WalletId:</h5>
+									<h5 id="walletId" class="card-title"></h5>
+									<p>Original Amount:</p>
 									<p id="walletIdAmount" class="card-text">${requestScope.walletIdAmount}</p>
+									<p>Transacted Amount:</p>
 									<p id="transactedAmount" class="card-text">${requestScope.transactedAmount}</p>
+									<p>New Amount:</p>
 									<p id="newWalletAmount" class="card-text">${requestScope.newWalletAmount}</p>
 								</div>
 							</div>
