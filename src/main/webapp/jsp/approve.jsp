@@ -10,6 +10,18 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"></script>
+<script type="text/javascript" src="<c:url value="/js/index.js"/>"></script>
 </head>
 <body>
 	<%@include file="/html/navbar.html"%>\
@@ -46,16 +58,18 @@
 							<td><c:out value="${transaction.receiverId}" /></td>
 							<td><c:out value="${transaction.amount}" /></td>
 							<td><c:out value="${transaction.type}" /></td>
-							<td><form action="approveModal" method="post">
+							<td><form id="approve+${transactions.indexOf(transaction)}"
+									action="approveModal" method="post">
 									<input type="hidden" type="number" name="walletId"
-										value=<c:out value="${transaction.walletId}" />>
-									<input type="hidden" type="number" step="0.01" name="amount"
-										value=<c:out value="${transaction.amount}" />>
-									<input type="hidden" type="number" name="receiverId"
-										value=<c:out value="${transaction.receiverId}" />>
-									<input type="hidden" type="text" name="type"
+										value=<c:out value="${transaction.walletId}" />> <input
+										type="hidden" type="number" step="0.01" name="amount"
+										value=<c:out value="${transaction.amount}" />> <input
+										type="hidden" type="number" name="receiverId"
+										value=<c:out value="${transaction.receiverId}" />> <input
+										type="hidden" type="text" name="type"
 										value=<c:out value="${transaction.type}" />>
 									<button type="submit" class="btn btn-success"
+										onclick="getInfo('approve'+${transactions.indexOf(transaction)})"
 										data-toggle="modal" data-target="#approveModal">Approve</button>
 								</form></td>
 						</tr>
