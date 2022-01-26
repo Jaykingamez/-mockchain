@@ -20,10 +20,10 @@
 						<div class="col-sm">
 							<div class="card">
 								<div class="card-body">
-									<h5 class="card-title">${requestScope.walletId}</h5>
-									<p class="card-text">${requestScope.walletIdAmount}</p>
-									<p class="card-text">Change</p>
-									<p class="card-text">New amount</p>
+									<h5 id="walletId" class="card-title">${requestScope.walletId}</h5>
+									<p id="walletIdAmount" class="card-text">${requestScope.walletIdAmount}</p>
+									<p id="transactedAmount" class="card-text">${requestScope.transactedAmount}</p>
+									<p id="newWalletAmount" class="card-text">${requestScope.newWalletAmount}</p>
 								</div>
 							</div>
 						</div>
@@ -31,10 +31,10 @@
 							<div class="col-sm">
 								<div class="card">
 									<div class="card-body">
-										<h5 class="card-title">Wallet Id</h5>
-										<p class="card-text">Old amount</p>
-										<p class="card-text">Change</p>
-										<p class="card-text">New amount</p>
+										<h5 id="receiverId" class="card-title">${requestScope.receiverId}</h5>
+										<p id="receiverIdAmount" class="card-text">${requestScope.receiverIdAmount}</p>
+										<p id="negativeTransactedAmount" class="card-text">${-requestScope.transactedAmount}</p>
+										<p id="newReceiverAmount" class="card-text">${requestScope.newReceiverAmount}</p>
 									</div>
 								</div>
 							</div>
