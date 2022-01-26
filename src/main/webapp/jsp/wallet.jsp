@@ -21,7 +21,7 @@
 		<div class="container col-md-6 mb-5">
 			<div class="card">
 				<div class="card-body text-center">
-					<h1 class="card-title">${sessionScope.username}'s wallet</h1>
+					<h1 class="card-title">${sessionScope.username}'swallet</h1>
 					<h3 class="card-subtitle mb-2 text-muted">Amount:
 						$${String.format("%.2f", sessionScope.amount)}</h3>
 				</div>
@@ -39,8 +39,7 @@
 									<fmt:formatDate value="${now}" pattern="dd-MM-yyyy" />
 								</h2>
 								<fieldset class="form-group">
-								<label>Operator</label>
-									<select name="operator">
+									<label>Operator</label> <select name="operator">
 										<option>+</option>
 										<option>-</option>
 									</select>
@@ -64,9 +63,8 @@
 									<fmt:formatDate value="${now}" pattern="dd-MM-yyyy" />
 								</h2>
 								<fieldset class="form-group">
-								<label>Receiver</label>
-									<input type="text"
-										class="form-control" name="receiver" required="required">
+									<label>Receiver</label> <input type="text" class="form-control"
+										name="receiver" required="required">
 								</fieldset>
 								<fieldset class="form-group">
 									<label>Amount</label> <input type="number" step="0.01"
