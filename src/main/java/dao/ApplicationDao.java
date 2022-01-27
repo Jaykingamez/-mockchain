@@ -174,18 +174,18 @@ public class ApplicationDao {
 	}
 
 	/**
-	 * update the amount in a user
+	 * update the amount in a user using walletId
 	 */
-	public double updateWalletAmount(int userId, double amount, Connection connection) {
+	public double updateWalletAmount(int walletId, double amount, Connection connection) {
 		int rowsAffected = errorCode;
 		try {
 			// write the select query
-			String sql = "update wallet set amount=?  where userId=?";
+			String sql = "update wallet set amount=? where walletId=?";
 
 			// set parameters with PreparedStatement
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setDouble(1, amount);
-			statement.setInt(2, userId);
+			statement.setInt(2, walletId);
 
 			// execute the statement and check whether user exists
 			ResultSet set = statement.executeQuery();
