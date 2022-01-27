@@ -56,8 +56,10 @@
 							<td><c:out value="${transaction.receiverId}" /></td>
 							<td><c:out value="${transaction.amount}" /></td>
 							<td><c:out value="${transaction.type}" /></td>
-							<td><form id="approve${transactions.indexOf(transaction)}" class="prevent"
-									action="approveModal" method="post">
+							<td><form id="approve${transactions.indexOf(transaction)}"
+									class="prevent" action="approveModal" method="post">
+									<input type="hidden" type="number" name="transactionId"
+										value=<c:out value="${transaction.transactionId}" />>
 									<input type="hidden" type="number" name="walletId"
 										value=<c:out value="${transaction.walletId}" />> <input
 										type="hidden" type="number" step="0.01" name="amount"
