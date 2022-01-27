@@ -31,27 +31,28 @@
 								</div>
 							</div>
 						</div>
-						<c:if test="${requestScope.type != null}">
-							<div class="col-sm">
-								<div class="card">
-									<div class="card-body">
-										<h5 id="receiverId" class="card-title">${requestScope.receiverId}</h5>
-										<p id="receiverIdAmount" class="card-text">${requestScope.receiverIdAmount}</p>
-										<p id="negativeTransactedAmount" class="card-text">${-requestScope.transactedAmount}</p>
-										<p id="newReceiverAmount" class="card-text">${requestScope.newReceiverAmount}</p>
-									</div>
+						<div id="receiver" class="col-sm">
+							<div class="card">
+								<div class="card-body">
+									<h5>Receiver WalletId:</h5>
+									<h5 id="receiverId" class="card-title">${requestScope.receiverId}</h5>
+									<p>Receiver Original Amount:</p>
+									<p id="receiverIdAmount" class="card-text">${requestScope.receiverIdAmount}</p>
+									<p>Receiver Transacted Amount:</p>
+									<p id="negativeTransactedAmount" class="card-text">${-requestScope.transactedAmount}</p>
+									<p>Receiver New Amount:</p>
+									<p id="newReceiverAmount" class="card-text">${requestScope.newReceiverAmount}</p>
 								</div>
 							</div>
-						</c:if>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<form action="" method="post">
-					<button type="submit" class="btn btn-success" value="approve"
-						data-dismiss="modal">Approve</button>
-					<button type="submit" class="btn btn-danger" value="reject"
-						data-dismiss="modal">Reject</button>
+				<form action="approve" method="post">
+					<input type="hidden" type="number" id="transactionId" name="transactionId">
+					<button type="submit" class="btn btn-success" value="approve">Approve</button>
+					<button type="submit" class="btn btn-danger" value="reject">Reject</button>
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
 				</form>
