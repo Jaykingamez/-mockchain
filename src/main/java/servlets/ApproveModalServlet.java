@@ -28,8 +28,15 @@ public class ApproveModalServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		boolean ajax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+		if(!ajax) {
+			return;
+		}
+		
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 
+		int transactionId = Integer.parseInt(request.getParameter("transactionId"));
 		int walletId = Integer.parseInt(request.getParameter("walletId"));
 		double amount = Double.parseDouble(request.getParameter("amount"));
 		String type = request.getParameter("type");
@@ -46,6 +53,7 @@ public class ApproveModalServlet extends HttpServlet {
 		 * request.setAttribute("transactedAmount", amount);
 		 * request.setAttribute("newWalletAmount", newWalletAmount);
 		 */
+		hashMap.put("transactionId", transactionId);
 
 		hashMap.put("walletId", walletId);
 		hashMap.put("walletIdAmount", walletIdAmount);
