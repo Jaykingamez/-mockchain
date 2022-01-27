@@ -2,14 +2,29 @@ package beans;
 
 public class Approve {
 	private int approveId;
+	private int userId;
 	private int transactionId;
 	private boolean approve;
 
-	public Approve(int approveId, int transactionId, boolean approve) {
-		super();
+	public Approve(int approveId, int userId, int transactionId, boolean approve) {
 		this.approveId = approveId;
+		this.userId = userId;
 		this.transactionId = transactionId;
 		this.approve = approve;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public int getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	/**
