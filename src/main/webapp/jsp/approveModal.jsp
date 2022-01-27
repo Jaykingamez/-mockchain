@@ -50,9 +50,10 @@
 			</div>
 			<div class="modal-footer">
 				<form action="approve" method="post">
+					<input type="hidden" type="number" id="hiddenWalletId" name="hiddenWalletId">
 					<input type="hidden" type="number" id="transactionId" name="transactionId">
-					<button type="submit" class="btn btn-success" value="approve">Approve</button>
-					<button type="submit" class="btn btn-danger" value="reject">Reject</button>
+					<button type="submit" class="btn btn-success" name="bool" value="approve">Approve</button>
+					<button type="submit" class="btn btn-danger" name="bool" value="reject">Reject</button>
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
 				</form>
