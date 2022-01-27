@@ -29,19 +29,19 @@
 					<div class="card-body">
 						<c:if test="${requestScope.entry == 'register'}">
 							<form action="register" method="post">
-							<h2>Registration Form</h2>
+								<h2>Registration Form</h2>
 						</c:if>
 						<c:if test="${requestScope.entry == 'login'}">
 							<form action="login" method="post">
-							<h2>Login Form</h2>
+								<h2>Login Form</h2>
 						</c:if>
 						<fieldset class="form-group">
 							<label>Username</label> <input type="text" class="form-control"
 								name="username" required="required">
 						</fieldset>
 						<fieldset class="form-group">
-							<label>Password</label> <input type="password" class="form-control"
-								name="password" required="required">
+							<label>Password</label> <input type="password"
+								class="form-control" name="password" required="required">
 						</fieldset>
 						<button type="submit" class="btn btn-success">Submit</button>
 						</form>
