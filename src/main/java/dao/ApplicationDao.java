@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.naming.CannotProceedException;
 
+import org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource;
+
 import dao.DBConnection;
 import servlets.WalletServlet;
 import beans.Approve;
@@ -78,9 +80,9 @@ public class ApplicationDao {
 			// write the select query
 			String sql = "select count(*) from user";
 			PreparedStatement statement = connection.prepareStatement(sql);
-			
+
 			ResultSet set = statement.executeQuery();
-			while(set.next()) {
+			while (set.next()) {
 				number = set.getInt("count(*)");
 			}
 		} catch (SQLException exception) {
@@ -141,7 +143,7 @@ public class ApplicationDao {
 
 		return wallet;
 	}
-	
+
 	/**
 	 * Get the user's wallet using walletId
 	 */
@@ -218,18 +220,21 @@ public class ApplicationDao {
 		return lastTransactionId;
 	}
 
-	public List<Transaction> getAllTransactions(String approveString , Connection connection) {
+	public List<Transaction> getAllTransactions(String approveString, int userId, Connection connection) {
 		List<Transaction> transactions = new ArrayList<>();
 
 		try {
 			String getQuery = "";
+			PreparedStatement preparedStatement;
 			if (approveString == "approve") {
 				getQuery = "select * from transaction where approve=1";
+				preparedStatement = connection.prepareStatement(getQuery);
 			} else {
-				getQuery = "select * from transaction where approve is null";
+				getQuery = "select * from transaction where approve is null and"
+						+ " transactionId not in (select transactionId from approve where userId=?)";
+				preparedStatement = connection.prepareStatement(getQuery);
+				preparedStatement.setInt(1, userId);
 			}
-			
-			PreparedStatement preparedStatement = connection.prepareStatement(getQuery);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
@@ -255,7 +260,6 @@ public class ApplicationDao {
 		return transactions;
 
 	}
-	
 
 	/**
 	 * Get transaction based on walletId
@@ -318,18 +322,59 @@ public class ApplicationDao {
 		return rowsAffected;
 	}
 
+	public int updateTransactionApproval(int transactionId, int bool, Connection connection) {
+		int rowsAffected = errorCode;
+		try {
+			String updateQuery = "update transaction set approve=? where transactionId=?";
+			// set parameters with PreparedStatement
+			java.sql.PreparedStatement statement = connection.prepareStatement(updateQuery);
+			statement.setInt(1, bool);
+			statement.setInt(2, transactionId);
+			
+			rowsAffected = statement.executeUpdate();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return rowsAffected;
+	}
+
+	/**
+	 * If bool is 1, true If bool is 0, false Get the number of people who approve
+	 */
+	public int getApprove(int transactionId, int bool, Connection connection) {
+		int number = errorCode;
+		try {
+			String getQuery = "select count(*) from approve where transactionId = ? and approve = ?";
+			// set parameters with PreparedStatement
+			java.sql.PreparedStatement statement = connection.prepareStatement(getQuery);
+			statement.setInt(1, transactionId);
+			statement.setInt(2, bool);
+
+			ResultSet set = statement.executeQuery();
+			while (set.next()) {
+				number = set.getInt("count(*)");
+			}
+
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return number;
+	}
+
 	/**
 	 * Add approve in approve list
 	 */
-	public int addApprove(int transactionId, Connection connection) {
+	public int addApprove(int transactionId, int userId, int bool, Connection connection) {
 		int rowsAffected = errorCode;
 		try {
 			// write the insert query
-			String insertQuery = "insert into approve (transactionId) values (?)";
+			String insertQuery = "insert into approve (transactionId, userId, approve) values (?, ?, ?)";
 
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
 			statement.setInt(1, transactionId);
+			statement.setInt(2, userId);
+			statement.setInt(3, bool);
 
 			// execute the statement
 			rowsAffected = statement.executeUpdate();
@@ -339,4 +384,5 @@ public class ApplicationDao {
 		}
 		return rowsAffected;
 	}
+
 }
