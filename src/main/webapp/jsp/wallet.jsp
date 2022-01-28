@@ -59,7 +59,7 @@
 									<fmt:formatDate value="${now}" pattern="dd-MM-yyyy" />
 								</h2>
 								<fieldset class="form-group">
-									<label>Receiver</label> <input type="text" class="form-control"
+									<label>Receiver's Wallet Id</label> <input type="text" class="form-control"
 										name="receiver" required="required">
 								</fieldset>
 								<fieldset class="form-group">
