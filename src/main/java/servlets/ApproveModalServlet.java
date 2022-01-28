@@ -28,12 +28,12 @@ public class ApproveModalServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		boolean ajax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-		if(!ajax) {
+		if (!ajax) {
 			return;
 		}
-		
+
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 
 		int transactionId = Integer.parseInt(request.getParameter("transactionId"));
@@ -43,9 +43,15 @@ public class ApproveModalServlet extends HttpServlet {
 
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
+
 		Wallet walletIdWallet = dao.getWalletWalletId(walletId, connection);
 		Double walletIdAmount = walletIdWallet.getAmount();
 		Double newWalletAmount = walletIdAmount + amount;
+
+		if (amount < 0) {
+			newWalletAmount = walletIdAmount;
+			walletIdAmount -= amount;
+		}
 
 		/*
 		 * request.setAttribute("walletId", walletId);
@@ -54,6 +60,11 @@ public class ApproveModalServlet extends HttpServlet {
 		 * request.setAttribute("newWalletAmount", newWalletAmount);
 		 */
 		hashMap.put("transactionId", transactionId);
+
+		hashMap.put("walletId", walletId);
+		hashMap.put("walletIdAmount", walletIdAmount);
+		hashMap.put("transactedAmount", amount);
+		hashMap.put("newWalletAmount", newWalletAmount);
 
 		hashMap.put("walletId", walletId);
 		hashMap.put("walletIdAmount", walletIdAmount);
