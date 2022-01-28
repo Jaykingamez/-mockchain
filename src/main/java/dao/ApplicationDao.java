@@ -176,7 +176,7 @@ public class ApplicationDao {
 	/**
 	 * update the amount in a user using walletId
 	 */
-	public double updateWalletAmount(int walletId, double amount, Connection connection) {
+	public int updateWalletAmount(int walletId, double amount, Connection connection) {
 		int rowsAffected = errorCode;
 		try {
 			// write the select query
@@ -188,10 +188,7 @@ public class ApplicationDao {
 			statement.setInt(2, walletId);
 
 			// execute the statement and check whether user exists
-			ResultSet set = statement.executeQuery();
-			while (set.next()) {
-				amount = set.getDouble("amount");
-			}
+			rowsAffected = statement.executeUpdate();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
@@ -227,7 +224,7 @@ public class ApplicationDao {
 			String getQuery = "";
 			PreparedStatement preparedStatement;
 			if (approveString == "approve") {
-				getQuery = "select * from transaction where approve=1";
+				getQuery = "select * from transaction where approve is not null";
 				preparedStatement = connection.prepareStatement(getQuery);
 			} else {
 				getQuery = "select * from transaction where approve is null and"
