@@ -41,7 +41,9 @@ public class PersonalServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		try {
+		String infoMessage = "Transaction performed successfully!";
+		
+		label: try {
 			String operator = request.getParameter("operator");
 			double amount = Double.parseDouble(request.getParameter("amount"));
 			int walletId = (int) request.getSession().getAttribute("walletId");
@@ -58,12 +60,13 @@ public class PersonalServlet extends HttpServlet {
 				lastTransactionId = null;
 			}
 			
-			String infoMessage = "Transaction performed successfully!";
+			
 			// deducting the amount makes it negative, else leave it as positive
-			if (operator == "-") {
+			if (operator.equals("-")) {
 				Wallet wallet =  dao.getWalletWalletId(walletId, connection);
 				if(wallet.getAmount() < amount){
 					infoMessage = "You don't have that much funds in your wallet!";
+					break label;
 				} else {
 					// stake the money so it cant be used for other transactions
 					dao.updateWalletAmount(walletId, wallet.getAmount() - amount , connection);
@@ -79,12 +82,14 @@ public class PersonalServlet extends HttpServlet {
 
 			if (transactionAffected == -1 || transaction == null) {
 				infoMessage = "Sorry, we failed to perform that transaction!";
+				break label;
 			}
-			request.setAttribute("infoMessage", infoMessage);
-		} catch (NumberFormatException exception) {
+		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+		request.setAttribute("infoMessage", infoMessage);
 		response.sendRedirect("wallet");
 	}
+	
 
 }
