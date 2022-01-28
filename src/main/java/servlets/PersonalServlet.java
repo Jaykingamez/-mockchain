@@ -1,6 +1,5 @@
 package servlets;
 
-import java.awt.Checkbox;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -87,7 +86,8 @@ public class PersonalServlet extends HttpServlet {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		request.setAttribute("infoMessage", infoMessage);
+		
+		request.getSession().setAttribute("infoMessage", infoMessage);
 		response.sendRedirect("wallet");
 	}
 	
