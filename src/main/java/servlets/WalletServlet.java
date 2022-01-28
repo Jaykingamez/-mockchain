@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.coyote.RequestGroupInfo;
+
 import beans.Wallet;
 import dao.ApplicationDao;
 
@@ -25,6 +27,7 @@ public class WalletServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int walletId = (int) request.getSession().getAttribute("walletId");
+		String infoMessage = (String) request.getSession().getAttribute("infoMessage");
 		
 		ApplicationDao dao = new ApplicationDao();
 		Connection connection = (Connection) getServletContext().getAttribute("dbconnection");
@@ -33,6 +36,8 @@ public class WalletServlet extends HttpServlet {
 		Double amount = wallet.getAmount();
 		
 		request.getSession().setAttribute("amount", amount);
+		request.setAttribute("infoMessage", infoMessage);
+		request.getSession().setAttribute("infoMessage", null);
 		request.getRequestDispatcher("/jsp/wallet.jsp").forward(request, response);
 	}
 
