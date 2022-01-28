@@ -52,8 +52,7 @@ public class ApproveServlet extends HttpServlet {
 		int halfNumberOfUsers = Math.floorDiv(numberOfUsers, 2);
 		
 		// should also work on a transfer use case
-		
-		if(bool == "approve") {
+		if(bool.equals("approve")) {
 			int approveBool = 1;
 			dao.addApprove(transactionId, userId, approveBool, connection);
 			int numberOfApprovals = dao.getApprove(transactionId,approveBool, connection);
@@ -69,11 +68,11 @@ public class ApproveServlet extends HttpServlet {
 				double newAmount = walletAmount + transactionAmount;
 				
 				// if transaction is negative, amount was already deducted
-				if(transactionAmount < 0) {
-					return;
+				if(transactionAmount > 0) {
+					dao.updateWalletAmount(walletId, newAmount, connection);
 				}
 				
-				dao.updateWalletAmount(walletId, newAmount, connection);
+				
 			}
 		} else {
 			int rejectBool = 0;
