@@ -2,6 +2,8 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.List;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +14,7 @@ import javax.sql.rowset.JoinRowSet;
 
 import org.eclipse.jdt.internal.compiler.IDebugRequestor;
 
+import beans.Approve;
 import beans.Transaction;
 import beans.Wallet;
 import dao.ApplicationDao;
@@ -33,8 +36,7 @@ public class ApproveServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// temp fix, I dont know why ajax is making calls here, but this will work for
-		// now
+		// block ajax calls
 		boolean ajax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
 		if (ajax) {
 			return;
@@ -57,7 +59,9 @@ public class ApproveServlet extends HttpServlet {
 		if (bool.equals("approve")) {
 			int approveBool = 1;
 			dao.addApprove(transactionId, userId, approveBool, connection);
-			int numberOfApprovals = dao.getApprove(transactionId, approveBool, connection);
+			List<Approve> approveList = dao.getApproveList(transactionId, approveBool, connection);
+			int numberOfApprovals = approveList.size();
+			
 			if (numberOfApprovals >= halfNumberOfUsers) {
 				// approve transaction
 				dao.updateTransactionApproval(transactionId, approveBool, connection);
@@ -82,12 +86,23 @@ public class ApproveServlet extends HttpServlet {
 					// so the money will be added to the receiver's account
 					dao.updateWalletAmount(receiverId, receiverAmount - transactionAmount, connection);
 				}
+				
+				// Reward the miner
+				Random random = new Random();
+				int minerUserId = approveList.get(random.nextInt(numberOfApprovals)).getUserId();
+				
+				Wallet minerWallet = dao.getWalletWalletId(minerUserId, connection);
+				int minerWalletId = minerWallet.getWalletId();
+				double minerWalletAmount = minerWallet.getAmount();
+				//give a single token
+				dao.updateWalletAmount(minerWalletId, minerWalletAmount + 1, connection);
 
 			}
 		} else {
 			int rejectBool = 0;
 			dao.addApprove(transactionId, userId, rejectBool, connection);
-			int numberOfRejections = dao.getApprove(transactionId, rejectBool, connection);
+			List<Approve> approveList = dao.getApproveList(transactionId, rejectBool, connection);
+			int numberOfRejections = approveList.size();
 			if (numberOfRejections >= halfNumberOfUsers) {
 				// reject transaction
 				dao.updateTransactionApproval(transactionId, rejectBool, connection);

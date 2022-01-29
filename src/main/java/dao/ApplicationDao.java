@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.CannotProceedException;
+import javax.swing.plaf.multi.MultiInternalFrameUI;
 
 import org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource;
 
@@ -338,10 +339,10 @@ public class ApplicationDao {
 	/**
 	 * If bool is 1, true If bool is 0, false Get the number of people who approve
 	 */
-	public int getApprove(int transactionId, int bool, Connection connection) {
-		int number = errorCode;
+	public List<Approve> getApproveList(int transactionId, int bool, Connection connection) {
+		List<Approve> approveList = new ArrayList<Approve>();
 		try {
-			String getQuery = "select count(*) from approve where transactionId = ? and approve = ?";
+			String getQuery = "select * from approve where transactionId = ? and approve = ?";
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(getQuery);
 			statement.setInt(1, transactionId);
@@ -349,13 +350,18 @@ public class ApplicationDao {
 
 			ResultSet set = statement.executeQuery();
 			while (set.next()) {
-				number = set.getInt("count(*)");
+				int approveId = set.getInt("approveId");
+				int userId = set.getInt("userId");
+				boolean approveBool = set.getBoolean("approve");
+				
+				Approve approve = new Approve(approveId, userId, transactionId, approveBool);
+				approveList.add(approve);
 			}
 
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return number;
+		return approveList;
 	}
 
 	/**
