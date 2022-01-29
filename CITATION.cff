@@ -1,8 +1,8 @@
 cff-version: 1.0.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Jaykin"
-  given_names: "Chan"
+  - given-names: Jaykin
+    family-names: Chan
 title: "Mockchain"
 version: 1.0.0
 date-released: 2021-1-20
