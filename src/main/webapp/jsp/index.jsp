@@ -15,8 +15,9 @@
 <jsp:include page="alert.jsp" />
 <body>
 	<header class="text-center">
-		<h1>Welcome to Mockchain</h1>
-		<h3>An educational Blockchain model</h3>
+		<h1 class="mb-3">Welcome to Mockchain</h1>
+		<h3 class="mb-0">An educational Blockchain model</h3>
+		<img class="mb-1" src="${pageContext.request.contextPath}/images/mockchain.png" alt="Mockchain Logo" height="222" >
 	</header>
 	<main>
 		<div class="text-center mb-5">
@@ -29,28 +30,30 @@
 					<div class="card-body">
 						<c:if test="${requestScope.entry == 'register'}">
 							<form action="register" method="post">
-								<h2>Registration Form</h2>
+								<h2 class="text-center">Registration Form</h2>
 						</c:if>
 						<c:if test="${requestScope.entry == 'login'}">
 							<form action="login" method="post">
-								<h2>Login Form</h2>
+								<h2 class="text-center">Login Form</h2>
 						</c:if>
 						<fieldset class="form-group">
-							<label>Username</label> <input type="text" class="form-control"
+							<label><h6>Username</h6></label> <input type="text" class="form-control"
 								name="username" required="required">
 						</fieldset>
 						<fieldset class="form-group">
-							<label>Password</label> <input type="password"
+							<label><h6>Password</h6></label> <input type="password"
 								class="form-control" name="password" required="required">
 						</fieldset>
-						<button type="submit" class="btn btn-success">Submit</button>
+						<div class="text-center">
+							<button type="submit" class="btn btn-success">Submit</button>
+						</div>
 						</form>
 					</div>
 				</div>
 			</div>
 		</c:if>
 	</main>
-	<footer class="footer">
+	<footer class="footer border-top pt-3">
 		<div class="container-fluid text-center">
 			<p>Mockchain is a submission for the hackathon hacksingapore
 				(hacksg) under the track "The Era of Blockchain & Trust" It seeks to
@@ -59,6 +62,5 @@
 				technology.</p>
 		</div>
 	</footer>
-	<!-- footer -->
 </body>
 </html>
