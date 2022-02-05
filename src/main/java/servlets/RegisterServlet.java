@@ -63,7 +63,6 @@ public class RegisterServlet extends HttpServlet {
 		request.setAttribute("infoMessage", infoMessage);
 		request.getSession().setAttribute("username", username);
 		request.getSession().setAttribute("userId", userId);
-		request.getSession().setAttribute("walletId", walletId);
 		request.getSession().setAttribute("amount", amount);
 		response.sendRedirect("wallet");
 
