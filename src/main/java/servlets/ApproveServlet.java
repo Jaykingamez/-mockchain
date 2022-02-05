@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
 
@@ -91,12 +92,23 @@ public class ApproveServlet extends HttpServlet {
 				Random random = new Random();
 				int minerUserId = approveList.get(random.nextInt(numberOfApprovals)).getUserId();
 				
-				Wallet minerWallet = dao.getWalletWalletId(minerUserId, connection);
+				Wallet minerWallet = dao.getWalletUserId(minerUserId, connection);
 				int minerWalletId = minerWallet.getWalletId();
 				double minerWalletAmount = minerWallet.getAmount();
+				
+				
+				// Get last transaction Id so that it can be chained to the new transaction
+				// return 0 by default if no transactions exist in the table
+				Integer lastTransactionId = dao.getLastTransactionId(walletId, connection);
+				
+				int minerTransactionId = lastTransactionId + 1;
+				
+				Transaction minerTransaction = new Transaction(minerTransactionId, lastTransactionId,
+						new Timestamp(System.currentTimeMillis()), minerTransactionId, null, 1, "personal", null);
+				dao.addTransaction(minerTransaction, connection);
+				
 				//give a single token
 				dao.updateWalletAmount(minerWalletId, minerWalletAmount + 1, connection);
-
 			}
 		} else {
 			int rejectBool = 0;
@@ -118,6 +130,27 @@ public class ApproveServlet extends HttpServlet {
 					double newAmount = walletAmount - transactionAmount;
 					dao.updateWalletAmount(walletId, newAmount, connection);
 				}
+				
+				// Reward the miner
+				Random random = new Random();
+				int minerUserId = approveList.get(random.nextInt(numberOfRejections)).getUserId();
+				
+				Wallet minerWallet = dao.getWalletUserId(minerUserId, connection);
+				int minerWalletId = minerWallet.getWalletId();
+				double minerWalletAmount = minerWallet.getAmount();
+				
+				// Get last transaction Id so that it can be chained to the new transaction
+				// return 0 by default if no transactions exist in the table
+				Integer lastTransactionId = dao.getLastTransactionId(walletId, connection);
+				
+				int minerTransactionId = lastTransactionId + 1;
+				
+				Transaction minerTransaction = new Transaction(minerTransactionId, lastTransactionId,
+						new Timestamp(System.currentTimeMillis()), minerTransactionId, null, 1, "personal", null);
+				dao.addTransaction(minerTransaction, connection);
+				
+				//give a single token
+				dao.updateWalletAmount(minerWalletId, minerWalletAmount + 1, connection);
 			}
 		}
 		response.sendRedirect("approve");
