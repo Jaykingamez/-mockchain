@@ -17,11 +17,12 @@ $(document).ready(function() {
 			$.each(response, function(key, value) {
 				if (key.includes("Amount")) {
 					$("#" + key).html(value + ".00");
-				} else if (key === "transactionId")
+				} else if (key === "transactionId") {
 					$("#" + key).val(value);
-				else if(key === "walletId")
-					$("#hiddenWalletId").val(value);
-				else {
+				} else if (key === "walletId") {
+					$("#hiddenWalletId").val(value); //hiddenWalletId to store in form action
+					$("#modalWalletId").html(value); //display walletId
+				} else {
 					$("#" + key).html(value);
 				}
 			});
