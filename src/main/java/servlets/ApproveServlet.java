@@ -104,8 +104,8 @@ public class ApproveServlet extends HttpServlet {
 				int minerTransactionId = lastTransactionId + 1;
 				
 				Transaction minerTransaction = new Transaction(minerTransactionId, lastTransactionId,
-						new Timestamp(System.currentTimeMillis()), minerTransactionId, null, 1, "personal", null);
-				dao.addTransaction(minerTransaction, connection);
+						new Timestamp(System.currentTimeMillis()), minerWalletId, null, 1, "personal", true);
+				dao.addApprovedTransaction(minerTransaction, connection);
 				
 				//give a single token
 				dao.updateWalletAmount(minerWalletId, minerWalletAmount + 1, connection);
@@ -146,8 +146,8 @@ public class ApproveServlet extends HttpServlet {
 				int minerTransactionId = lastTransactionId + 1;
 				
 				Transaction minerTransaction = new Transaction(minerTransactionId, lastTransactionId,
-						new Timestamp(System.currentTimeMillis()), minerTransactionId, null, 1, "personal", null);
-				dao.addTransaction(minerTransaction, connection);
+						new Timestamp(System.currentTimeMillis()), minerWalletId, null, 1, "personal", true);
+				dao.addApprovedTransaction(minerTransaction, connection);
 				
 				//give a single token
 				dao.updateWalletAmount(minerWalletId, minerWalletAmount + 1, connection);
