@@ -21,7 +21,7 @@
 							<div class="card text-center">
 								<div class="card-body">
 									<h5>WalletId:</h5>
-									<h5 id="walletId" class="card-title"></h5>
+									<h5 id="modalWalletId" class="card-title"></h5>
 									<p>Original Amount:</p>
 									<p id="walletIdAmount" class="card-text">${requestScope.walletIdAmount}</p>
 									<p>Transacted Amount:</p>

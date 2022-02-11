@@ -319,6 +319,33 @@ public class ApplicationDao {
 		}
 		return rowsAffected;
 	}
+	
+	public int addApprovedTransaction(Transaction transaction, Connection connection) {
+		int rowsAffected = errorCode;
+
+		try {
+
+			String insertQuery = "insert into transaction (transactionId, previousTransactionId, timestamp, walletId, "
+					+ "receiverId, amount, type, approve) values (?, ?, ?, ?, ?, ?, ?, ?)";
+			// set parameters with PreparedStatement
+			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
+			statement.setInt(1, transaction.getTransactionId());
+			statement.setObject(2, transaction.getPreviousTransactionId(), Types.INTEGER);
+			statement.setTimestamp(3, transaction.getTimestamp());
+			statement.setInt(4, transaction.getWalletId());
+			statement.setObject(5, transaction.getReceiverId(), Types.INTEGER);
+			statement.setDouble(6, transaction.getAmount());
+			statement.setString(7, transaction.getType());
+			statement.setBoolean(8, transaction.getApprove());
+
+			// execute the statement
+			rowsAffected = statement.executeUpdate();
+
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return rowsAffected;
+	}
 
 	public int updateTransactionApproval(int transactionId, int bool, Connection connection) {
 		int rowsAffected = errorCode;
