@@ -8,6 +8,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import dao.DBConnection;
+import dao.TestDBConnection;
 
 @WebListener
 public class ApplicationListeners implements ServletContextListener {
@@ -26,7 +27,7 @@ public class ApplicationListeners implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		System.out.println("in contextinitialized method");
-		Connection connection = DBConnection.getConnectionToDatabase();
+		Connection connection = TestDBConnection.getConnectionToDatabase();
 		arg0.getServletContext().setAttribute("dbconnection", connection);
 		
 	}
