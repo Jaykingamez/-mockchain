@@ -279,7 +279,7 @@ public class ApplicationDao {
 				int receiverId = set.getInt("receiverId");
 				double amount = set.getDouble("amount");
 				String type = set.getString("type");
-				Boolean approve = set.getBoolean("approve");
+				Boolean approve = set.getObject("approve", Boolean.class);
 
 				transaction = new Transaction(transactionId, previousTransactionId, timestamp, walletId, receiverId,
 						amount, type, approve);
