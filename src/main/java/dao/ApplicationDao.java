@@ -96,7 +96,7 @@ public class ApplicationDao {
 	 * Create new user's wallet
 	 */
 	public int createWallet(int userId, Connection connection) {
-		int amount = errorCode;
+		int rowsAffected = errorCode;
 
 		try {
 			// write the insert query
@@ -108,12 +108,12 @@ public class ApplicationDao {
 			statement.setInt(2, 0);
 
 			// execute the statement
-			amount = statement.executeUpdate();
+			rowsAffected = statement.executeUpdate();
 
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return amount;
+		return rowsAffected;
 	}
 
 	/**
