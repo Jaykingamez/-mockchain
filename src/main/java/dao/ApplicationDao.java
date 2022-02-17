@@ -9,13 +9,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.CannotProceedException;
-import javax.swing.plaf.multi.MultiInternalFrameUI;
-
-import org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource;
-
-import dao.DBConnection;
-import servlets.WalletServlet;
 import beans.Approve;
 import beans.Transaction;
 import beans.User;
