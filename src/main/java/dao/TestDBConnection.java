@@ -76,7 +76,7 @@ public class TestDBConnection {
 
 	public static void destroyDatabase(Connection connection) {
 		try {
-			connection.createStatement().execute("DROP ALL OBJECTS DELETE FILES");
+			connection.createStatement().execute("DROP SCHEMA mockchain CASCADE");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
