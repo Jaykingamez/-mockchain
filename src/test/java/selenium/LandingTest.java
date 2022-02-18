@@ -159,7 +159,7 @@ public class LandingTest {
 		webDriver = new ChromeDriver();
 		
 		Connection connection = TestDBConnection.getConnectionToDatabase();
-		TestDBConnection.initializeDatabase(connection)
+		TestDBConnection.initializeDatabase(connection);
 	}
 
 	@AfterAll
