@@ -1,8 +1,4 @@
-pipeline {
-    // use repo's dockerfile
-    agent { 
-        dockerfile true 
-    }
+node {
     stages{
         stage('SCM Checkout'){
             steps{
