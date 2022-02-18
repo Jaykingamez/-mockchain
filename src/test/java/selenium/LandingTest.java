@@ -157,12 +157,18 @@ public class LandingTest {
 
 		// initialize FirefoxDriver at the start of test
 		webDriver = new ChromeDriver();
+		
+		Connection connection = TestDBConnection.getConnectionToDatabase();
+		TestDBConnection.initializeDatabase(connection)
 	}
 
 	@AfterAll
 	public static void afterTest() throws Exception {
 		// Quit the ChromeDriver and close all associated window at the end of test
 		webDriver.quit();
+		
+		Connection connection = TestDBConnection.getConnectionToDatabase();
+		TestDBConnection.destroyDatabase(connection);
 	}
 
 }
