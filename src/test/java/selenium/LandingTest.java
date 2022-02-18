@@ -159,7 +159,8 @@ public class LandingTest {
 		webDriver = new ChromeDriver();
 		
 		Connection connection = TestDBConnection.getConnectionToDatabase();
-		TestDBConnection.initializeDatabase(connection);
+		TestDBConnection.destroyDatabase(connection); // destroy database 
+		TestDBConnection.initializeDatabase(connection); // before initializing
 	}
 
 	@AfterAll
