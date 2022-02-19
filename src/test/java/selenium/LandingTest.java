@@ -12,9 +12,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import dao.TestDBConnection;
+import dao.DBConnection;
 
-import org.apache.taglibs.standard.lang.jstl.test.beans.PublicBean1;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -158,8 +157,9 @@ public class LandingTest {
 		// initialize FirefoxDriver at the start of test
 		webDriver = new ChromeDriver();
 		
-		Connection connection = TestDBConnection.getConnectionToDatabase();
-		TestDBConnection.initializeDatabase(connection); // before initializing
+		Connection connection = DBConnection.getConnectionToDatabase();
+		DBConnection.initializeDatabase(connection); // before initializing
+		DBConnection.destroyDatabase(connection); // clear its contents if there are any left over
 		
 	}
 
@@ -168,8 +168,8 @@ public class LandingTest {
 		// Quit the ChromeDriver and close all associated window at the end of test
 		webDriver.quit();
 		
-		Connection connection = TestDBConnection.getConnectionToDatabase();
-		TestDBConnection.destroyDatabase(connection);
+		Connection connection = DBConnection.getConnectionToDatabase();
+		DBConnection.destroyDatabase(connection);
 	}
 
 }
