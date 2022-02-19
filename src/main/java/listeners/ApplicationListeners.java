@@ -16,7 +16,7 @@ public class ApplicationListeners implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent arg0) {
 		System.out.println("in contextDestroyed method");
 		Connection connection = (Connection)arg0.getServletContext().getAttribute("dbconnection");
-		TestDBConnection.destroyDatabase(connection);
+		DBConnection.destroyDatabase(connection);
 		try {
 			connection.close();
 		} catch (SQLException e) {
@@ -28,8 +28,8 @@ public class ApplicationListeners implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		System.out.println("in contextinitialized method");
-		Connection connection = TestDBConnection.getConnectionToDatabase();
-		TestDBConnection.initializeDatabase(connection);
+		Connection connection = DBConnection.getConnectionToDatabase();
+		DBConnection.initializeDatabase(connection);
 		arg0.getServletContext().setAttribute("dbconnection", connection);
 	}
 
