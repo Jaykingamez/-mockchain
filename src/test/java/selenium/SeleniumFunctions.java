@@ -1,8 +1,11 @@
 package selenium;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.intThat;
+import static org.mockito.ArgumentMatchers.nullable;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -13,7 +16,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import net.bytebuddy.implementation.InvokeDynamic.InvocationProvider.ArgumentProvider;
+import beans.Transaction;
 
 @TestMethodOrder(OrderAnnotation.class)
 public class SeleniumFunctions {
@@ -89,7 +92,7 @@ public class SeleniumFunctions {
 		// Give or Remove money from oneself
 		webDriver.findElement(By.name("amount")).sendKeys(Integer.toString(amount));
 
-		assertEquals("50", webDriver.findElement(By.name("amount")).getAttribute("value"));
+		assertEquals(Integer.toString(amount), webDriver.findElement(By.name("amount")).getAttribute("value"));
 
 		// Submit form
 		webDriver.findElement(By.name("amount")).submit();
@@ -115,7 +118,7 @@ public class SeleniumFunctions {
 	/**
 	 * Approve or Reject supposed transaction
 	 */
-	public static void transactionApproval(WebDriver webDriver, int walletId, String initialAmount, 
+	public static void transactionApproval(WebDriver webDriver, int walletId, String initialAmount,
 			String transactedAmount, String newAmount, String approve) {
 		// navigate to Approve
 		webDriver.findElement(By.linkText("Approve")).click();
@@ -128,12 +131,50 @@ public class SeleniumFunctions {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("modalWalletId")));
 
 		// check if modal's values are accurate
-		assertEquals(Integer.toString(walletId), webDriver.findElement(By.id("modalWalletId")).getAttribute("innerText"));
+		assertEquals(Integer.toString(walletId),
+				webDriver.findElement(By.id("modalWalletId")).getAttribute("innerText"));
 		assertEquals(initialAmount, webDriver.findElement(By.id("walletIdAmount")).getAttribute("innerText"));
 		assertEquals(transactedAmount, webDriver.findElement(By.id("transactedAmount")).getAttribute("innerText"));
 		assertEquals(newAmount, webDriver.findElement(By.id("newWalletAmount")).getAttribute("innerText"));
 
 		// approve transaction
 		webDriver.findElement(By.cssSelector("button[value='" + approve + "']")).click();
+	}
+
+	/**
+	 * Check all Transactions
+	 */
+	public static void checkTransactions(WebDriver webDriver, List<Transaction> transactionList) {
+		// get table body to loop through it
+		WebElement tableBodyElement = webDriver.findElement(By.tagName("tbody"));
+
+		// get the table rows
+		List<WebElement> trCollection = tableBodyElement.findElements(By.tagName("tr"));
+		for (int i = 0; i < transactionList.size(); i++) {
+			List<WebElement> tdCollection = trCollection.get(i).findElements(By.tagName("td"));
+			
+			String transactionId = Integer.toString(transactionList.get(i).getTransactionId());
+			// return empty string if null or convert int to string if not null
+			String previousTransactionId = transactionList.get(i).getPreviousTransactionId() == 
+					null ? "" : Integer.toString(transactionList.get(i).getPreviousTransactionId());
+			String timeStamp = transactionList.get(i).getTimestamp().toString();
+			String walletId = Integer.toString(transactionList.get(i).getWalletId());
+			// return empty string if null or convert int to string if not null
+			String receiverId = transactionList.get(i).getReceiverId() == 
+					null ? "" : Integer.toString(transactionList.get(i).getReceiverId());
+			String amount = transactionList.get(i).getAmount() + "00";
+			String type = transactionList.get(i).getType();
+			String approve = transactionList.get(i).toString();
+				
+				
+			assertEquals(transactionId, tdCollection.get(0).getText());
+			assertEquals(previousTransactionId, tdCollection.get(1).getText());
+			assertEquals(timeStamp, tdCollection.get(2).getText());
+			assertEquals(walletId, tdCollection.get(3).getText());
+			assertEquals(receiverId, tdCollection.get(4).getText());
+			assertEquals(amount, tdCollection.get(5).getText());
+			assertEquals(type, tdCollection.get(6).getText());
+			assertEquals(approve, tdCollection.get(7).getText());
+		}
 	}
 }
