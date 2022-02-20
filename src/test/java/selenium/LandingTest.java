@@ -3,6 +3,8 @@ package selenium;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +14,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import beans.Transaction;
+import dao.ApplicationDao;
 import dao.DBConnection;
 
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +29,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 public class LandingTest {
 	// declare Selenium WebDriver
 	private static WebDriver webDriver;
+	private static List<Transaction> transactionList;
+	private static Connection connection;
+	private static ApplicationDao dao;
 	private String testUsername = "testUsername";
 	private String testPassword = "testPassword";
 
@@ -100,9 +107,23 @@ public class LandingTest {
 		assertEquals("Amount: $51.00",
 				webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
 	}
-
+	
 	@Test
 	@Order(5)
+	/**
+	 * Check if Transactions appear in approved list
+	 */
+	public void checkTransactions() {
+		//go to transaction page
+		webDriver.findElement(By.linkText("Transaction")).click();
+		
+		//check if all transaction that are needed to be displayed are displayed
+		transactionList = dao.getAllTransactions("approve", 1, connection);
+		SeleniumFunctions.checkTransactions(webDriver, transactionList);
+	}
+
+	@Test
+	@Order(6)
 	/**
 	 * Register secondUsername's account
 	 */
@@ -118,7 +139,7 @@ public class LandingTest {
 	}
 
 	@Test
-	@Order(6)
+	@Order(7)
 	/**
 	 * Transfer 100 from testUsername's wallet to secondUsername's wallet
 	 */
@@ -148,9 +169,12 @@ public class LandingTest {
 		// initialize FirefoxDriver at the start of test
 		webDriver = new ChromeDriver();
 
-		Connection connection = DBConnection.getConnectionToDatabase();
+		connection = DBConnection.getConnectionToDatabase();
 		DBConnection.initializeDatabase(connection); // before initializing
 		DBConnection.destroyDatabase(connection); // clear its contents if there are any left over
+		
+		dao = new ApplicationDao();
+		transactionList = new ArrayList<Transaction>();
 
 	}
 
