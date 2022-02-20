@@ -8,11 +8,8 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import beans.Transaction;
 import dao.ApplicationDao;
@@ -59,8 +56,8 @@ public class LandingTest {
 	 * login testUsername's account
 	 */
 	public void loginAccount() {
-		// Load website as a new page
-		webDriver.navigate().to("http://localhost:8090/mockchain/");
+		// logout and test login
+		webDriver.findElement(By.linkText("Logout")).click();
 
 		SeleniumFunctions.login(webDriver, testUsername, testPassword);
 	}
@@ -68,8 +65,8 @@ public class LandingTest {
 	@Test
 	@Order(3)
 	/**
-	 * Verify that money cannot be deucted from testUsername's $0 wallet
-	 * Give testUsername's wallet $50
+	 * Verify that money cannot be deucted from testUsername's $0 wallet Give
+	 * testUsername's wallet $50
 	 */
 	public void conductPersonalTransaction() {
 		// deduct $100 from testUser who has $0
@@ -80,7 +77,7 @@ public class LandingTest {
 
 		// dismiss alert that pops out
 		webDriver.switchTo().alert().accept();
-		
+
 		// Give testUser $50
 		SeleniumFunctions.personalAmount(webDriver, "+", 50);
 
@@ -94,11 +91,14 @@ public class LandingTest {
 	@Test
 	@Order(4)
 	/**
-	 * Approve Transaction to give testUsername $50
-	 * Confirm final amount $51, original + mining reward
+	 * Approve Transaction to give testUsername $50 Confirm final amount $51,
+	 * original + mining reward
 	 */
 	public void approveTransaction() {
-		SeleniumFunctions.transactionApproval(webDriver, 1, "0.00", "50.00", "50.00", "approve");
+		// check if all transaction that are needed to be displayed are displayed
+		transactionList = dao.getAllTransactions("", 1, connection);
+
+		SeleniumFunctions.transactionApproval(webDriver, 1, "0.00", "50.00", "50.00", "approve", transactionList);
 
 		// navigate to Wallet
 		webDriver.findElement(By.linkText("Wallet")).click();
@@ -107,17 +107,17 @@ public class LandingTest {
 		assertEquals("Amount: $51.00",
 				webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
 	}
-	
+
 	@Test
 	@Order(5)
 	/**
 	 * Check if Transactions appear in approved list
 	 */
 	public void checkTransactions() {
-		//go to transaction page
+		// go to transaction page
 		webDriver.findElement(By.linkText("Transaction")).click();
-		
-		//check if all transaction that are needed to be displayed are displayed
+
+		// check if all transaction that are needed to be displayed are displayed
 		transactionList = dao.getAllTransactions("approve", 1, connection);
 		SeleniumFunctions.checkTransactions(webDriver, transactionList);
 	}
@@ -147,15 +147,95 @@ public class LandingTest {
 		// login to testUsername's account
 		SeleniumFunctions.login(webDriver, testUsername, testPassword);
 
-		// transfer money from testUsername's wallet to secondUsername's wallet
+		// transfer too much money
 		SeleniumFunctions.transferAmount(webDriver, 2, 100);
-
 		// check if alert text is accurate
 		assertEquals("You don't have that much funds in your wallet!", webDriver.switchTo().alert().getText());
-
 		// dismiss alert that pops out
 		webDriver.switchTo().alert().accept();
 
+		// transfer money from testUsername's wallet to secondUsername's wallet
+		SeleniumFunctions.transferAmount(webDriver, 2, 25);
+		// check if alert text is accurate
+		assertEquals("Transaction performed successfully!", webDriver.switchTo().alert().getText());
+		// dismiss alert that pops out
+		webDriver.switchTo().alert().accept();
+
+		transactionList = dao.getAllTransactions("", 1, connection);
+		// approve transaction
+		SeleniumFunctions.transactionApproval(webDriver, 1, "51.00", "-25.00", "26.00", "approve", transactionList);
+
+		webDriver.findElement(By.linkText("Wallet")).click();
+		// $26 remaining + $1 (mining fee)
+		assertEquals("Amount: $27.00",
+				webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
+
+		// check if transactions are displayed accurately
+		webDriver.findElement(By.linkText("Transaction")).click();
+		transactionList = dao.getAllTransactions("approve", 1, connection);
+		SeleniumFunctions.checkTransactions(webDriver, transactionList);
+
+		webDriver.findElement(By.linkText("Logout")).click();
+		SeleniumFunctions.login(webDriver, secondUsername, secondPassword);
+		// check if money was transferred over
+		assertEquals("Amount: $25.00",
+				webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
+	}
+
+	@Test
+	@Order(8)
+	/**
+	 * Create thirdUsername's account Give themself $100 and approve it However,
+	 * since there are 3 people using the system, one approve is not enough Money
+	 * should still stay the same SecondUsername's will approve the transaction One
+	 * of them will get the mining token
+	 */
+	public void createThirdAccount() {
+		webDriver.findElement(By.linkText("Logout")).click();
+		SeleniumFunctions.register(webDriver, thirdUsername, thirdPassword);
+		SeleniumFunctions.personalAmount(webDriver, "+", 100);
+		// check if alert text is accurate
+		assertEquals("Transaction performed successfully!", webDriver.switchTo().alert().getText());
+		// dismiss alert that pops out
+		webDriver.switchTo().alert().accept();
+		
+		transactionList = dao.getAllTransactions("", 0, connection);
+		SeleniumFunctions.transactionApproval(webDriver, 3, "0.00", "100.00", "100.00", "approve", transactionList);
+
+		webDriver.findElement(By.linkText("Wallet")).click();
+		// check if money was given
+		assertEquals("Amount: $0.00",
+				webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
+
+		// check approved Transactions are unchanged
+		webDriver.findElement(By.linkText("Transaction")).click();
+		transactionList = dao.getAllTransactions("approve", 0, connection);
+		SeleniumFunctions.checkTransactions(webDriver, transactionList);
+
+		webDriver.findElement(By.linkText("Logout")).click();
+		SeleniumFunctions.login(webDriver, secondUsername, secondPassword);
+		transactionList = dao.getAllTransactions("", 0, connection);
+		SeleniumFunctions.transactionApproval(webDriver, 3, "0.00", "100.00", "100.00", "approve", transactionList);
+
+		webDriver.findElement(By.linkText("Logout")).click();
+		SeleniumFunctions.login(webDriver, thirdUsername, thirdPassword);
+		
+		// check if money was given
+		if (webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText()
+				.equals("Amount: $100.00")) {
+			// expected sum
+			assertEquals("Amount: $100.00",
+					webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
+		} else {
+			// expected sum + $1 mining fee
+			assertEquals("Amount: $101.00",
+					webDriver.findElement(By.xpath("//h3[@class='card-subtitle mb-2 text-muted']")).getText());
+		}
+
+		// ensure all transactions are displayed accurately
+		webDriver.findElement(By.linkText("Transaction")).click();
+		transactionList = dao.getAllTransactions("approve", 0, connection);
+		SeleniumFunctions.checkTransactions(webDriver, transactionList);
 	}
 
 	@BeforeAll
@@ -172,7 +252,7 @@ public class LandingTest {
 		connection = DBConnection.getConnectionToDatabase();
 		DBConnection.initializeDatabase(connection); // before initializing
 		DBConnection.destroyDatabase(connection); // clear its contents if there are any left over
-		
+
 		dao = new ApplicationDao();
 		transactionList = new ArrayList<Transaction>();
 
