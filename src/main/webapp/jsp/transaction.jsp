@@ -44,7 +44,7 @@
 							<td><c:out value="${transaction.timestamp}" /></td>
 							<td><c:out value="${transaction.walletId}" /></td>
 							<td><c:out value="${transaction.receiverId}" /></td>
-							<td><c:out value="${String.format(\"%.2f\", transaction.amount)}" /></td>
+							<td><c:out value=${String.format("%.2f", transaction.amount)} /></td>
 							<td><c:out value="${transaction.type}" /></td>
 							<td><c:out value="${transaction.approve}" /></td>
 						</tr>
