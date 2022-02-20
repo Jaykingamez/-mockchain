@@ -162,7 +162,7 @@ public class SeleniumFunctions {
 			// return empty string if null or convert int to string if not null
 			String receiverId = transactionList.get(i).getReceiverId() == 
 					null ? "" : Integer.toString(transactionList.get(i).getReceiverId());
-			String amount = transactionList.get(i).getAmount() + "00";
+			String amount = transactionList.get(i).getAmount() + "0";
 			String type = transactionList.get(i).getType();
 			String approve = transactionList.get(i).toString();
 				
