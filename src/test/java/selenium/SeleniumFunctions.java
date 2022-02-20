@@ -1,10 +1,7 @@
 package selenium;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.intThat;
-import static org.mockito.ArgumentMatchers.nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.jupiter.api.TestMethodOrder;
@@ -26,8 +23,6 @@ public class SeleniumFunctions {
 	public static void register(WebDriver webDriver, String username, String password) {
 		// check that it is on homepage
 		assertEquals(webDriver.getTitle(), "Mockchain");
-
-		System.out.println("title: " + webDriver.getTitle());
 
 		// Open the register form
 		webDriver.findElement(By.linkText("Register")).click();
@@ -113,15 +108,20 @@ public class SeleniumFunctions {
 
 		// input an amount more than eligible amount walletId
 		webDriver.findElement(By.name("amount")).sendKeys(Integer.toString(amount));
+		
+		// Submit form
+		webDriver.findElement(By.name("amount")).submit();
 	}
 
 	/**
 	 * Approve or Reject supposed transaction
 	 */
 	public static void transactionApproval(WebDriver webDriver, int walletId, String initialAmount,
-			String transactedAmount, String newAmount, String approve) {
+			String transactedAmount, String newAmount, String approve, List<Transaction> transactionList) {
 		// navigate to Approve
 		webDriver.findElement(By.linkText("Approve")).click();
+		
+		checkTransactions(webDriver, transactionList);
 
 		// click approve button
 		webDriver.findElement(By.id("approve0")).click();
@@ -164,7 +164,10 @@ public class SeleniumFunctions {
 					null ? "" : Integer.toString(transactionList.get(i).getReceiverId());
 			String amount = transactionList.get(i).getAmount() + "0";
 			String type = transactionList.get(i).getType();
-			String approve = transactionList.get(i).toString();
+			// if null return empty string
+			// else return "true" if true and "false" is false
+			String approve = transactionList.get(i).getApprove() == null ? "" : 
+				transactionList.get(i).getApprove() ? "true" : "false";
 				
 				
 			assertEquals(transactionId, tdCollection.get(0).getText());
@@ -174,7 +177,14 @@ public class SeleniumFunctions {
 			assertEquals(receiverId, tdCollection.get(4).getText());
 			assertEquals(amount, tdCollection.get(5).getText());
 			assertEquals(type, tdCollection.get(6).getText());
-			assertEquals(approve, tdCollection.get(7).getText());
+			// if on Approval page, check if text equals "Approve"
+			// else on transaction page, check the values
+			if(tdCollection.get(7).getText().equals("Approve")) {
+				assertEquals("Approve", tdCollection.get(7).getText());
+			} else {
+				assertEquals(approve, tdCollection.get(7).getText());
+			}
+			
 		}
 	}
 }
