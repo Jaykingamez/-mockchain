@@ -48,8 +48,6 @@ public class SeleniumFunctions {
 		// check that it is on homepage
 		assertEquals(webDriver.getTitle(), "Mockchain");
 
-		System.out.println("title: " + webDriver.getTitle());
-
 		// Open the login form
 		webDriver.findElement(By.linkText("Login")).click();
 
