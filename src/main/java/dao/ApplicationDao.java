@@ -195,7 +195,7 @@ public class ApplicationDao {
 	public int getLastTransactionId(int walletId, Connection connection) {
 		int lastTransactionId = -1;
 		try {
-			String getQuery = "select * from transaction order by timestamp desc limit 1";
+			String getQuery = "select * from transaction order by transactionId desc limit 1";
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(getQuery);
 
@@ -258,7 +258,8 @@ public class ApplicationDao {
 	public Transaction getTransaction(int walletId, Connection connection) {
 		Transaction transaction = null;
 		try {
-			String getQuery = "select * from transaction where walletId=? order by timestamp desc limit 1";
+			// get the last/latest transaction
+			String getQuery = "select * from transaction where walletId=? order by transactionId desc limit 1";
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(getQuery);
 			statement.setInt(1, walletId);
