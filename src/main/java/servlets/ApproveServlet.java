@@ -51,8 +51,8 @@ public class ApproveServlet extends HttpServlet {
 		int numberOfUsers = dao.getTotalNumberOfUsers(connection);
 		// more than 50% of users, transaction is approved
 		// get the number of users at 50%
-		int halfNumberOfUsers = Math.floorDiv(numberOfUsers, 2);
-
+		int halfNumberOfUsers = (int) Math.round(numberOfUsers / 2.0);
+		
 		// should also work on a transfer use case
 		if (bool.equals("approve")) {
 			int approveBool = 1;

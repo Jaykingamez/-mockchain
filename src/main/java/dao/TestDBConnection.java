@@ -23,7 +23,7 @@ public class TestDBConnection {
 			System.out.println("MySQL H2 Driver Registered!");
 
 			// get hold of the DriverManager
-			connection = DriverManager.getConnection("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1", "sa", "sa");
+			connection = DriverManager.getConnection("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;MV_STORE=false", "sa", "sa");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Where is your MySQL H2 Driver?");
 			e.printStackTrace();
@@ -76,7 +76,7 @@ public class TestDBConnection {
 
 	public static void destroyDatabase(Connection connection) {
 		try {
-			connection.createStatement().execute("DROP ALL OBJECTS DELETE FILES");
+			connection.createStatement().execute("DROP SCHEMA mockchain CASCADE");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

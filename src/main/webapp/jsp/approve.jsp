@@ -54,7 +54,7 @@
 							<td><c:out value="${transaction.timestamp}" /></td>
 							<td><c:out value="${transaction.walletId}" /></td>
 							<td><c:out value="${transaction.receiverId}" /></td>
-							<td><c:out value="${transaction.amount}" /></td>
+							<td><c:out value="${String.format(\"%.2f\", transaction.amount)}" /></td>
 							<td><c:out value="${transaction.type}" /></td>
 							<td><form id="approve${transactions.indexOf(transaction)}"
 									class="prevent" action="approveModal" method="post">
