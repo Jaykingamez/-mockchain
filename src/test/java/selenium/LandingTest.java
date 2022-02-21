@@ -38,8 +38,9 @@ public class LandingTest {
 	private String thirdUsername = "thirdUsername";
 	private String thirdPassword = "thirdPassword";
 
-	private boolean thirdUsernameApproval;
-	private boolean testUsernameRejection;
+	// store data over tests
+	private static boolean thirdUsernameApproval;
+	private static boolean testUsernameRejection;
 
 	@Test
 	@Order(1)
