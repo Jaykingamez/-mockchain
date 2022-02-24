@@ -4,7 +4,6 @@
 package dao;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.intThat;
 
 import java.sql.Connection;
 import java.util.List;
