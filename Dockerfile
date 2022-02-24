@@ -5,6 +5,6 @@ COPY target/*.war /usr/local/tomcat/webapps/mockchain.war
 
 # move the files from webapps.dist to webapps 
 #RUN mv /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps/
-RUN cd /usr/local/tomcat/webapps.dist & cp -R * /usr/local/tomcat/webapps
+RUN cd /usr/local/tomcat/webapps.dist & cp -R * ../webapps
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
