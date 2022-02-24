@@ -7,7 +7,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import dao.DBConnection;
 import dao.TestDBConnection;
 
 @WebListener

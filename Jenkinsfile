@@ -1,21 +1,41 @@
 // Jenkins file for Windows machine
 node {
-    stage('SCM Checkout'){
-        git branch: 'selenium_testing', credentialsId: '8280ff9f-7c61-4212-8afd-6a966bafd4b5', url: 'https://github.com/Jaykingamez/mockchain'
-    }
-    stage('Mvn Package'){
-        def mvnHome = tool name: 'maven 3.8.2', type: 'maven'
-        def mvnCMD = "${mvnHome}/bin/mvn"
-        bat "${mvnCMD} clean package"
-    }
     stage('Build docker'){
-        bat 'docker build -t jaykingamez/mockchain:0.0.1 .'
+        ws("C:/Users/jayki/Documents/workspace") {
+            bat 'docker build -t jaykingamez/mockchain:0.0.1 .'
+        }
     } 
     stage('Push Docker Image'){	
-        withCredentials([string(credentialsId: 'dockerPWD', variable: 'dockerPWD')]) {
+        ws("C:/Users/jayki/Documents/workspace") {
+            withCredentials([string(credentialsId: 'dockerPWD', variable: 'dockerPWD')]) {
             bat "docker login -u jaykingamez -p ${dockerPWD}"
+            }
+            bat 'docker push jaykingamez/mockchain:0.0.1'
         }
-        bat 'docker push jaykingamez/mockchain:0.0.1'
-	    
+    }
+    stage("Remove previous container"){
+        def dockerStop = 'docker stop mockchain'
+        def dockerRemove = 'docker rm mockchain'
+        sshagent(['dev-server']) {
+            try{
+                // stop image instance first
+                bat "ssh -o StrictHostKeyChecking=no ec2-user@18.141.187.89 ${dockerStop}"
+                // remove docker image if it exist
+                bat "ssh -o StrictHostKeyChecking=no ec2-user@18.141.187.89 ${dockerRemove}"
+            }       
+            catch (err){
+                echo "Previous Image does not exist"
+            }
+        }
+    }
+    stage('Run Container on AWS'){
+        // get newest docker Image
+        def newDockerImage = 'docker pull jaykingamez/mockchain:0.0.1'
+        def dockerRun = 'docker run -p 8080:8080 -d --name mockchain jaykingamez/mockchain:0.0.1'
+        sshagent(['dev-server']) {
+            // replace with new one
+            bat "ssh -o StrictHostKeyChecking=no ec2-user@18.141.187.89 ${newDockerImage}"
+            bat "ssh -o StrictHostKeyChecking=no ec2-user@18.141.187.89 ${dockerRun}"
+        }
     }
 }
