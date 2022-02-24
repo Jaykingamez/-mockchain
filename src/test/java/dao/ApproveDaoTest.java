@@ -15,8 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import beans.Approve;
-import dao.ApplicationDao;
-import dao.TestDBConnection;
 
 /**
  * @author jayki
